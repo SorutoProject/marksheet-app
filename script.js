@@ -38,6 +38,10 @@ const app = createApp({
 				value: "A,B,C,D"
 			},
 			{
+				name: "英検",
+				value: "1,2,3,4"
+			},
+			{
 				name: "自動車免許　学科試験",
 				value: "正,誤"
 			}
