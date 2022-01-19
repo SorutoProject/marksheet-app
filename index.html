@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="ブラウザですぐに使えるマークシート。">
+  <title>マークシートアプリ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div id="app" v-cloak>
+	<div class="container">
+		<b v-if="testTitle === '' || page === 'init'">マークシートアプリ</b>
+		<b v-else>{{ testTitle }}</b>
+	</div>
+
+	<!--初期設定ページ-->
+	<div v-if="page==='init'" class="container">
+		<span><b>1. 初期設定</b></span><br>
+		<p>試験の名前を入力（任意）</p>
+		<p>
+			<input type="text" placeholder="例：共通テスト　数学ⅠA　2022" v-model="testTitle">
+		</p>
+		<p>マークシートの選択肢をカンマ区切りで入力</p>
+		<p>
+			<input type="text" v-model="marksheet.itemsCSV">
+		</p>
+		<p>
+			下から選択して入力することもできます
+		</p>
+		<p>
+			<select @change="marksheet.itemsCSV = event.currentTarget.value">
+				<option value="" selected>試験を選択...</option>
+				<option v-for="item in marksheet.presetItemsCSV" :value="item.value">{{item.name}}</option>
+			</select>
+		</p>
+		<hr>
+		<p>
+			制限時間：
+			<input type="number" style="width:50px;display:inline-block;" @change="timer.setTime = parseInt(event.currentTarget.value) * 60"> 分
+		</p>
+		<p class="text-centered">
+			<button @click="startAnswering">解答開始</button>
+		</p>
+	</div>
+
+	<!--回答入力ページ-->
+	<div v-else-if="page==='enterAnswer'" class="container">
+		<span><b>2. 解答入力</b></span>
+
+		<table>
+			<tr>
+				<td>No.</td>
+				<td class="text-centered">解答欄</td>
+			</tr>
+			<tr v-for="(answer, i) in marksheet.answers">
+				<td>{{ i + 1 }}</td>
+				<td>
+					<button v-for="(item, j) in marksheet.items" class="marksheet-item" :class="{'is-active': marksheet.answers[i] === j}" @click="setMark(i,j)">
+						{{item}}
+					</button>
+				</td>
+			</tr>
+		</table>
+		<p style="color:#777;font-size:10pt;" class="text-centered">一番下の問題にマークを付けると、その次の問題のマークを入力できるようになります。</p>
+		<div style="height:150px;"></div>
+		<p class="text-centered">
+			<button @click="stopAnswering">解答を終了</button>
+		</p>
+	</div>
+
+	<!--模範解答入力ページ-->
+	<div v-else-if="page==='enterCorrectAnswer'" class="container">
+		<span><b>3. 模範解答入力</b></span>
+
+		<table>
+			<tr>
+				<td>No.</td>
+				<td class="text-centered">模範解答欄</td>
+			</tr>
+			<tr v-for="(answer, i) in marksheet.correctAnswers">
+				<td>{{ i + 1 }}</td>
+				<td>
+					<button v-for="(item, j) in marksheet.items" class="marksheet-item" :class="{'is-active': marksheet.correctAnswers[i] === j}" @click="marksheet.correctAnswers[i] = j">
+						{{item}}
+					</button>
+				</td>
+			</tr>
+		</table>
+		<div style="height:50px;"></div>
+		<p class="text-centered">
+			<button @click="grade">採点する</button>
+		</p>
+	</div>
+	
+	<!--結果ページ-->
+	<div v-else-if="page==='result'" class="container">
+		<p class="text-centered">正答率<br>
+		<span class="text-centered" style="font-size:24pt;"><b>{{marksheet.correctRate}}%</b></p>
+		<p style="color:#777;" class="text-centered">{{marksheet.numberOfQuestions}} 問中 <b>{{marksheet.numberOfCorrect}}</b> 問 正解</p>
+		<!--正誤表-->
+		<table>
+			<tr>
+				<td>No.</td>
+				<td class="text-centered">解答</td>
+				<td class="text-centered">正答</td>
+				<td class="text-centered">正誤</td>
+			</tr>
+			<tr v-for="(answer, questionIndex) in marksheet.answers">
+				<td>{{ questionIndex + 1 }}</td>
+				<td class="text-centered">{{ marksheet.items[answer] }}</td>
+				<td class="text-centered">{{ marksheet.items[marksheet.correctAnswers[questionIndex]] }}</td>
+				<td class="text-centered">{{ getGradeCharacter(marksheet.items[answer] === marksheet.items[marksheet.correctAnswers[questionIndex]]) }}</td>
+			</tr>
+		</table>
+	</div>
+
+	<!--ページが見つからないとき-->
+	<div v-else class="text-centered" class="container">
+		<p>最初からやり直してください</p>
+		<p><button @click="location.reload()">やり直す</button></p>
+	</div>
+</div>
+<!-- partial -->
+  <script type="module" src="./script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,95 @@
+body{
+	font-family:sans-serif;
+}
+div.container {
+	--padding-size: 5px;
+
+	width: calc(100% - (var(--padding-size) * 2));
+	max-width: 960px;
+	margin: auto;
+
+	padding: var(--padding-size);
+	margin-top: 10px;
+}
+
+hr {
+	border: none;
+	border-top: 1px solid #aaa;
+}
+
+input[type="text"] {
+	display: block;
+	width: 100%;
+	padding: 0;
+	border: none;
+	box-shadow: 0 0 0 2px rgb(70, 70, 70);
+	font-size: 16pt;
+	border-radius: 5px;
+	padding: 5px 0px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+select {
+	height:50px;
+}
+
+button {
+	background-color: #33ccaa;
+	color:#fff;
+	border:none;
+	padding:10px 30px;
+	border-radius: 5px;
+}
+
+button.marksheet-item{
+	background-color: #fff;
+	border:2px solid #000;
+	color:#000;
+	padding:10px;
+	margin:5px;
+	border-radius: 50px;
+}
+
+button.marksheet-item.is-active{
+	background-color: #000;
+	color:#fff;
+}
+
+table{
+	border-collapse: collapse;
+	
+	width:100%;
+}
+
+tr, td{
+	border: 1px solid #aaa;
+}
+
+td:first-child{
+	width:50px;
+	text-align: center;
+}
+
+.text-centered{
+	text-align: center;
+}
+
+#app{
+	opacity:1;
+	transition-duration:0.3s;
+}
+
+#app[v-cloak]{
+	opacity:0;
+}
